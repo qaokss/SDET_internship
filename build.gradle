@@ -1,6 +1,5 @@
-plugins {
-    id 'java'
-}
+apply plugin: 'idea'
+apply plugin: 'java'
 
 group 'test'
 version '1.0-SNAPSHOT'
@@ -12,8 +11,24 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-    implementation 'io.rest-assured:rest-assured:4.0.0'
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.6.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.6.2")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.2")
 
+    implementation 'io.rest-assured:rest-assured:4.0.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+}
+
+test {
+    // Enable JUnit 5 (Gradle 4.6+).
+    useJUnitPlatform()
+
+    // Always run tests, even when nothing changed.
+    dependsOn 'cleanTest'
+
+    // Show test results.
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
