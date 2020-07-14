@@ -2,6 +2,8 @@ package api.tests.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
+
 public class Fact {
 
     @SerializedName("_id")
@@ -62,5 +64,23 @@ public class Fact {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Fact fact = (Fact) o;
+        return Objects.equals(id, fact.id) &&
+                Objects.equals(text, fact.text) &&
+                Objects.equals(type, fact.type) &&
+                Objects.equals(upvotes, fact.upvotes) &&
+                Objects.equals(userUpvoted, fact.userUpvoted) &&
+                Objects.equals(user, fact.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, type, upvotes, userUpvoted, user);
     }
 }
