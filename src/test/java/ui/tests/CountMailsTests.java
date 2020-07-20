@@ -5,24 +5,21 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
+import ui.tests.appmanager.BaseHelper;
 import ui.tests.appmanager.SessionHelper;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
-public class CountMailsTests {
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    protected final SessionHelper app = new SessionHelper();
-    private WebDriver wd;
-    private String baseUrl;
+public class CountMailsTests extends BaseHelper {
+
+
+
 
     @Before
     public void setUp() {
-
-        wd = new ChromeDriver();
-        baseUrl = "https://www.google.com/intl/ru/gmail/about/#";
-        wd.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        initChromeWebDriver();
     }
 
     @After
@@ -35,29 +32,49 @@ public class CountMailsTests {
     public void countMassagesTest() {
 
 
-        wd.get(baseUrl);
-        wd.findElement(By.linkText("Войти")).click();
+        goTo().loginPage();
+
 
         // переключение на активную вкладку
-        ArrayList<String> tabs2 = new ArrayList<String> (wd.getWindowHandles());
+        ArrayList<String> tabs2 = new ArrayList<>(wd.getWindowHandles());
         wd.switchTo().window(tabs2.get(1));
 
         // ввод логина
         wd.findElement(By.id("identifierId")).sendKeys("test.box.for.sdet.internship@gmail.com");
 
         // далее
-        wd.findElement(By.xpath("//button/div[2]")).click();;
+        wd.findElement(By.xpath("//button/div[2]")).click();
 
         // ввод пароля
-        wd.findElement(By.name("password")).click();
-        wd.findElement(By.name("password")).sendKeys("testbox1");
+        type(By.name("password"), "testbox1");
+
+
         wd.findElement(By.xpath("//button/div[2]")).click();
 
         // подтверждение в предупреждающем окне
-        wd.findElement(By.xpath("//div[2]/div/span/span")).click();
+        // wd.findElement(By.xpath("//div[2]/div/span/span"));
 
 
+        // ищем кол-во писем с темой
+        int countBeforeSendingLetter = countMessages();
 
+
+        // пишем письмо самому себе
+        wd.findElement(By.cssSelector("div.T-I.T-I-KE.L3")).click();
+        wd.findElement(By.xpath("//textarea")).click();
+
+        //
+        type(By.name("to"), "test.box.for.sdet.internship@gmail.com");
+        type(By.name("subjectbox"), "Simbirsoft theme");
+        type(By.id(":ay"), "Найдено " + countBeforeSendingLetter + " писем");
+
+
+        wd.findElement(By.id(":9j")).click();
+
+
+        int countAfterSendingLetter = countMessages();
+
+        assertEquals(countBeforeSendingLetter + 1, countAfterSendingLetter);
     }
 
 

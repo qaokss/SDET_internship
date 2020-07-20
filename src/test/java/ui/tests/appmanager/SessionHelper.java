@@ -12,27 +12,27 @@ public class SessionHelper {
 
     public WebDriver wd;
     private NavigationHelper navigationHelper;
-    private BaseHelper baseHelper;
+//    private BaseHelper baseHelper;
 
-    public void init() {
-        wd = new ChromeDriver();
-        wd.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-        wd.get("https://www.google.com/intl/ru/gmail/about/#");
-
+    public WebDriver initChromeWebDriver() {
+        this.wd = new ChromeDriver();
+        this.wd.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        return wd;
     }
-        public void login() {
-            baseHelper.type(By.name("user"), "");
-            baseHelper.type(By.name("pass"), "");
-            baseHelper.click(By.xpath("//input[@value='Login']"));
-            navigationHelper = new NavigationHelper(wd);
 
-        }
+//        public void login() {
+//            baseHelper.type(By.name("user"), "");
+//            baseHelper.type(By.name("pass"), "");
+//            baseHelper.click(By.xpath("//input[@value='Login']"));
+//
+//
+//        }
 
     public NavigationHelper goTo() {
+        navigationHelper = new NavigationHelper(this.wd);
         return navigationHelper;
     }
 
-    public void stop() {
-        wd.quit();
-    }
+
+
 }
