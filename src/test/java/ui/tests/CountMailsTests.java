@@ -4,13 +4,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import ui.tests.appmanager.BaseHelper;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CountMailsTests extends BaseHelper {
-
-
 
 
     @Before
@@ -29,30 +30,22 @@ public class CountMailsTests extends BaseHelper {
 
 
         goTo().loginPage();
+
         loginWithCorrectLoginAndPassword();
-        findAllMessagesOnPage();
 
-        System.out.println(findAllMessagesOnPage());
+        // получаем все письма
+        List<WebElement> allMessages = findAllMessagesOnPage();
 
+        // подсчёт писем с темой
+        long countBeforeSendingLetter = countMessagesWithTheme("Simbirsoft theme", allMessages);
 
+        //  пишем письмо самому себе
+        writingLetterToMyself(countBeforeSendingLetter);
 
+        // снова считаем письма с темой
+        long countAfterSendingLetter = countMessagesWithTheme("Simbirsoft theme", allMessages);
 
-        // пишем письмо самому себе
-//        wd.findElement(By.cssSelector("div.T-I.T-I-KE.L3")).click();
-//        wd.findElement(By.xpath("//textarea")).click();
-
-        //
-//        type(By.name("to"), "test.box.for.sdet.internship@gmail.com");
-//        type(By.name("subjectbox"), "Simbirsoft theme");
-//        type(By.id(":ay"), "Найдено " + countBeforeSendingLetter + " писем");
-
-
-//        wd.findElement(By.id(":9j")).click();
-
-
-//        int countAfterSendingLetter = findAllMessagesOnPage();
-//
-//        assertEquals(countBeforeSendingLetter + 1, countAfterSendingLetter);
+        assertEquals(countBeforeSendingLetter + 1, countAfterSendingLetter);
     }
 
 
