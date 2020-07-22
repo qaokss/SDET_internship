@@ -18,4 +18,8 @@ public class NavigationHelper {
         wd.get(baseUrl);
         wd.findElement(By.linkText("Войти")).click();
     }
+
+    public void inbox() {
+        wd.get("https://mail.google.com/mail/u/0/#inbox");
+    }
 }

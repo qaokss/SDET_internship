@@ -1,22 +1,31 @@
 package ui.tests.appmanager;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class BaseHelper extends SessionHelper {
 
 
-    // обходим ошибку "Element is not clickable..."
+    // обходим ошибку "Element is not clickable..." для гугл хром
     private Actions safeClickToElement(By locator) {
         Actions actions = new Actions(wd);
-        actions.moveToElement(wd.findElement(locator)).click().perform();
+        actions.pause(300).moveToElement(wd.findElement(locator)).click().perform();
         return actions;
     }
-
 
     protected void type(By locator, String text) {
         this.safeClickToElement(locator);
@@ -37,9 +46,10 @@ public class BaseHelper extends SessionHelper {
 
 
 
-    protected long countMessagesWithTheme(String theme, List<WebElement> messages) {
-        long lenth = messages.stream().filter(webElement -> webElement.getText().contains(theme)).count();
-        return lenth;
+    protected long countMessagesWithTheme(String theme) {
+        List<WebElement> messages = findAllMessagesOnPage();
+        goTo().inbox();
+        return messages.stream().filter(webElement -> webElement.getText().contains(theme)).count();
     }
 
 
@@ -75,10 +85,20 @@ public class BaseHelper extends SessionHelper {
 
         type(By.name("subjectbox"), "Simbirsoft theme");
 
-        type(By.xpath("div[role='textbox']"), "Найдено " + countBeforeSendingLetter + " писем");
+        type(By.cssSelector("div[role='textbox']"), "Найдено " + countBeforeSendingLetter + " писем");
 
         wd.findElement(By.xpath("//div[text()='Отправить']")).click();
+
     }
 
 
+    protected void waitNewMessages() {
+        Wait<WebDriver> fluentWait = new FluentWait<>(wd)
+                .ignoring(StaleElementReferenceException.class)
+                .pollingEvery(Duration.of(500, MILLIS))
+                .withTimeout(Duration.of(10, SECONDS))
+                .withMessage("not found");
+
+        fluentWait.until(webDriver -> webDriver.findElement(By.cssSelector("div[role='tabpanel']")));
+    }
 }
