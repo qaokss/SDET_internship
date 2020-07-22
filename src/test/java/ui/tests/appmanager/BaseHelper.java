@@ -5,10 +5,8 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -19,6 +17,17 @@ import static java.time.temporal.ChronoUnit.MILLIS;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class BaseHelper extends SessionHelper {
+
+
+    public static final By MAILBOX_ADDRESS_FIELD = By.id("identifierId");
+    public static final By NEXT = By.xpath("//button/span[text()='Далее']");
+    public static final By PASSWORD_FIELD = By.name("password");
+    public static final By MAILS_TABLE = By.cssSelector("table[role='grid'] tr[role='row']");
+    public static final By WRITE_NEW_EMAIL = By.xpath("//div[text()='Написать']");
+    public static final By THEME_FIELD = By.name("subjectbox");
+    public static final By TEXT_FIELD = By.cssSelector("div[role='textbox']");
+    public static final By SEND_MESSAGE = By.xpath("//div[text()='Отправить']");
+    public static final By RECIEVER = By.name("to");
 
 
     // обходим ошибку "Element is not clickable..." для гугл хром
@@ -36,15 +45,13 @@ public class BaseHelper extends SessionHelper {
         }
     }
 
-
     /**
      * поиск всех писем на странице
      **/
     protected List<WebElement> findAllMessagesOnPage() {
-        List<WebElement> messages = wd.findElements(By.cssSelector("table[role='grid'] tr[role='row']"));
+        List<WebElement> messages = wd.findElements(MAILS_TABLE);
         return messages;
     }
-
 
 
     protected long countMessagesWithTheme(String theme) {
@@ -53,50 +60,58 @@ public class BaseHelper extends SessionHelper {
         return messages.stream().filter(webElement -> webElement.getText().contains(theme)).count();
     }
 
-
-    protected void login(String mailboxAdress, String password) {
+    /**
+     * Метод логинится с указанным ящиком и паролем
+     *
+     * @param mailboxAddress
+     * @param password
+     */
+    protected void login(String mailboxAddress, String password) {
         // переключение на активную вкладку
         ArrayList<String> tabs2 = new ArrayList<>(wd.getWindowHandles());
         wd.switchTo().window(tabs2.get(1));
 
         // ввод логина
-        wd.findElement(By.id("identifierId")).sendKeys(mailboxAdress);
+        wd.findElement(MAILBOX_ADDRESS_FIELD).sendKeys(mailboxAddress);
 
         // далее
-        safeClickToElement(By.xpath("//button/span[text()='Далее']"));
+        safeClickToElement(NEXT);
 
         // ввод пароля
-        type(By.name("password"), password);
+        type(PASSWORD_FIELD, password);
 
-        safeClickToElement(By.xpath("//button/span[text()='Далее']"));
+        safeClickToElement(NEXT);
     }
 
     /**
-     * логинимся с корректным логином и паролем
-     **/
+     * Логин с корректным ящиком и паролем, которые берутся из файла .properties
+     */
     protected void loginWithCorrectLoginAndPassword() throws IOException {
         initProperties();
         login(initProperties().getProperty("mailbox_address"), initProperties().getProperty("mailbox_password"));
     }
 
 
-
-    /** пишем письмо самому себе **/
+    /**
+     * пишем письмо самому себе
+     **/
     protected void writingLetterToMyself(long countBeforeSendingLetter) throws IOException {
         initProperties();
-        wd.findElement(By.xpath("//div[text()='Написать']")).click();
+        wd.findElement(WRITE_NEW_EMAIL).click();
 
-        type(By.name("to"), initProperties().getProperty("mailbox_address"));
+        type(RECIEVER, initProperties().getProperty("mailbox_address"));
 
-        type(By.name("subjectbox"), "Simbirsoft theme");
+        type(THEME_FIELD, "Simbirsoft theme");
 
-        type(By.cssSelector("div[role='textbox']"), "Найдено " + countBeforeSendingLetter + " писем");
+        type(TEXT_FIELD, "Найдено " + countBeforeSendingLetter + " писем");
 
-        wd.findElement(By.xpath("//div[text()='Отправить']")).click();
+        wd.findElement(SEND_MESSAGE).click();
 
     }
 
-
+    /**
+     * неявное ожидание загрузки страницы
+     */
     protected void waitNewMessages() {
         Wait<WebDriver> fluentWait = new FluentWait<>(wd)
                 .ignoring(StaleElementReferenceException.class)
@@ -104,6 +119,6 @@ public class BaseHelper extends SessionHelper {
                 .withTimeout(Duration.of(10, SECONDS))
                 .withMessage("not found");
 
-        fluentWait.until(webDriver -> webDriver.findElement(By.cssSelector("div[role='tabpanel']")));
+        fluentWait.until(webDriver -> webDriver.findElement(MAILS_TABLE));
     }
 }

@@ -1,12 +1,11 @@
 package ui.tests.appmanager;
 
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -14,7 +13,6 @@ public class SessionHelper {
 
     public WebDriver wd;
     private NavigationHelper navigationHelper;
-    private BaseHelper baseHelper;
     private Properties properties;
 
 
