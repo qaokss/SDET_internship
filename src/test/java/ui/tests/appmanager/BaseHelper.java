@@ -10,6 +10,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,35 +54,39 @@ public class BaseHelper extends SessionHelper {
     }
 
 
-    /**
-     * логинимся с корректным логином и паролем
-     **/
-    protected void loginWithCorrectLoginAndPassword() {
+    protected void login(String mailboxAdress, String password) {
         // переключение на активную вкладку
         ArrayList<String> tabs2 = new ArrayList<>(wd.getWindowHandles());
         wd.switchTo().window(tabs2.get(1));
 
         // ввод логина
-        wd.findElement(By.id("identifierId")).sendKeys("test.box.for.sdet.internship@gmail.com");
+        wd.findElement(By.id("identifierId")).sendKeys(mailboxAdress);
 
         // далее
         safeClickToElement(By.xpath("//button/span[text()='Далее']"));
 
         // ввод пароля
-        type(By.name("password"), "testbox1");
+        type(By.name("password"), password);
 
         safeClickToElement(By.xpath("//button/span[text()='Далее']"));
+    }
 
+    /**
+     * логинимся с корректным логином и паролем
+     **/
+    protected void loginWithCorrectLoginAndPassword() throws IOException {
+        initProperties();
+        login(initProperties().getProperty("mailbox_address"), initProperties().getProperty("mailbox_password"));
     }
 
 
 
-
     /** пишем письмо самому себе **/
-    protected void writingLetterToMyself(long countBeforeSendingLetter) {
+    protected void writingLetterToMyself(long countBeforeSendingLetter) throws IOException {
+        initProperties();
         wd.findElement(By.xpath("//div[text()='Написать']")).click();
 
-        type(By.name("to"), "test.box.for.sdet.internship@gmail.com");
+        type(By.name("to"), initProperties().getProperty("mailbox_address"));
 
         type(By.name("subjectbox"), "Simbirsoft theme");
 

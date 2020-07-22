@@ -6,8 +6,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
@@ -15,23 +14,28 @@ public class SessionHelper {
 
     public WebDriver wd;
     private NavigationHelper navigationHelper;
-//
-    private String fileWithProperties;
+    private BaseHelper baseHelper;
+    private Properties properties;
+
 
     public WebDriver initChromeWebDriver() {
-      //  properties.load(new FileReader(new File(fileWithProperties)));
-
         this.wd = new ChromeDriver();
         this.wd.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
         return wd;
     }
 
 
+    public Properties initProperties() throws IOException {
+        properties = new Properties();
+        properties.load(new FileInputStream("src/test/resources/config.properties"));
+
+        return properties;
+    }
+
     public NavigationHelper goTo() {
         navigationHelper = new NavigationHelper(this.wd);
         return navigationHelper;
     }
-
 
 
 }
