@@ -5,8 +5,10 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -54,10 +56,10 @@ public class BaseHelper extends SessionHelper {
     }
 
 
-    protected long countMessagesWithTheme(String theme) {
+    protected int countMessagesWithTheme(String theme) {
         List<WebElement> messages = findAllMessagesOnPage();
         goTo().inbox();
-        return messages.stream().filter(webElement -> webElement.getText().contains(theme)).count();
+        return (int)messages.stream().filter(webElement -> webElement.getText().contains(theme)).count();
     }
 
     /**
@@ -109,16 +111,22 @@ public class BaseHelper extends SessionHelper {
 
     }
 
+
     /**
      * неявное ожидание загрузки страницы
      */
-    protected void waitNewMessages() {
-        Wait<WebDriver> fluentWait = new FluentWait<>(wd)
-                .ignoring(StaleElementReferenceException.class)
-                .pollingEvery(Duration.of(500, MILLIS))
-                .withTimeout(Duration.of(10, SECONDS))
-                .withMessage("not found");
-
-        fluentWait.until(webDriver -> webDriver.findElement(MAILS_TABLE));
+    protected void waitNewMessages(Integer number) {
+        WebDriverWait wait = new WebDriverWait(wd, 10);
+        wait.until(ExpectedConditions.numberOfElementsToBeMoreThan( MAILS_TABLE, number));
     }
+
+//    protected void waitNewMessages() {
+//        Wait<WebDriver> fluentWait = new FluentWait<>(wd)
+//                .ignoring(StaleElementReferenceException.class)
+//                .pollingEvery(Duration.of(500, MILLIS))
+//                .withTimeout(Duration.of(10, SECONDS))
+//                .withMessage("not found");
+//
+//        fluentWait.until(webDriver -> webDriver.findElement(MAILS_TABLE));
+//    }
 }

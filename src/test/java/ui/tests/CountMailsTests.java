@@ -39,13 +39,13 @@ public class CountMailsTests extends BaseHelper {
 
         loginWithCorrectLoginAndPassword();
 
-        long countBeforeSendingLetter = countMessagesWithTheme("Simbirsoft theme");
+        int countBeforeSendingLetter = countMessagesWithTheme("Simbirsoft theme");
 
         writingLetterToMyself(countBeforeSendingLetter);
 
-        waitNewMessages();
+        waitNewMessages(countBeforeSendingLetter);
 
-        long countAfterSendingLetter = countMessagesWithTheme("Simbirsoft theme");
+        int countAfterSendingLetter = countMessagesWithTheme("Simbirsoft theme");
 
         assertEquals(countBeforeSendingLetter + 1, countAfterSendingLetter);
     }
