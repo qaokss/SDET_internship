@@ -1,21 +1,31 @@
 package ui.tests.PageObjects;
 
-import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.PageFactory;
 import ui.tests.appmanager.BaseHelper;
-import ui.tests.appmanager.SessionHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Properties;
 
 
 public class LoginPage extends BaseHelper {
-    public static final By MAILBOX_ADDRESS_FIELD = By.id("identifierId");
-    public static final By NEXT = By.xpath("//button/span[text()='Далее']");
-    public static final By PASSWORD_FIELD = By.name("password");
+    @FindBy(id = "identifierId")
+    public static WebElement           MAILBOX_ADDRESS_FIELD;
+
+    @FindBy(xpath = "//button/span[text()='Далее']")
+    public static WebElement           NEXT;
+
+    @FindBy(name = "password")
+    public static WebElement           PASSWORD_FIELD;
 
 
+    public LoginPage(WebDriver wd) {
+        PageFactory.initElements(wd, this);
+
+    }
 
     /**
      * Метод логинится с указанным ящиком и паролем
@@ -29,7 +39,7 @@ public class LoginPage extends BaseHelper {
         wd.switchTo().window(tabs2.get(1));
 
         // ввод логина
-        wd.findElement(MAILBOX_ADDRESS_FIELD).sendKeys(mailboxAddress);
+        MAILBOX_ADDRESS_FIELD.sendKeys(mailboxAddress);
 
         // далее
         safeClickToElement(NEXT);
@@ -44,8 +54,8 @@ public class LoginPage extends BaseHelper {
      * Логин с корректным ящиком и паролем, которые берутся из файла .properties
      */
     public static void loginWithCorrectLoginAndPassword() throws IOException {
-        initProperties();
-        login(initProperties().getProperty("mailbox_address"), initProperties().getProperty("mailbox_password"));
+        Properties properties = initProperties();
+        login(properties.getProperty("mailbox_address"), properties.getProperty("mailbox_password"));
     }
 
 }

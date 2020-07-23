@@ -24,17 +24,17 @@ public class BaseHelper extends SessionHelper {
 
 
     // обходим ошибку "Element is not clickable..." для гугл хром
-    protected static Actions safeClickToElement(By locator) {
+    protected static Actions safeClickToElement(WebElement locator) {
         Actions actions = new Actions(wd);
-        actions.pause(300).moveToElement(wd.findElement(locator)).click().perform();
+        actions.pause(300).moveToElement(locator).click().perform();
         return actions;
     }
 
-    protected static void type(By locator, String text) {
+    protected static void type(WebElement locator, String text) {
         safeClickToElement(locator);
         if (text != null) {
-            wd.findElement(locator).clear();
-            wd.findElement(locator).sendKeys(text);
+            locator.clear();
+            locator.sendKeys(text);
         }
     }
 

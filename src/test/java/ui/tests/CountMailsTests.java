@@ -25,15 +25,15 @@ public class CountMailsTests extends BaseTest {
 
         goTo().loginPage();
 
-        LoginPage.loginWithCorrectLoginAndPassword();
+        lp().loginWithCorrectLoginAndPassword();
 
-        int countBeforeSendingLetter = InboxPage.countMessagesWithTheme("Simbirsoft theme");
+        int countBeforeSendingLetter = ip().countMessagesWithTheme("Simbirsoft theme");
 
-        InboxPage.writingLetterToMyself(countBeforeSendingLetter);
+        ip().writingLetterToMyself(countBeforeSendingLetter);
 
-        InboxPage.waitNewMessages(countBeforeSendingLetter);
+        ip().waitNewMessages(countBeforeSendingLetter);
 
-        int countAfterSendingLetter = InboxPage.countMessagesWithTheme("Simbirsoft theme");
+        int countAfterSendingLetter = ip().countMessagesWithTheme("Simbirsoft theme");
 
         assertEquals(countBeforeSendingLetter + 1, countAfterSendingLetter);
     }
