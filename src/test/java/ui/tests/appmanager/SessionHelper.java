@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 public class SessionHelper {
 
-    public WebDriver wd;
-    private NavigationHelper navigationHelper;
-    private Properties properties;
+    public static WebDriver wd;
+    private static NavigationHelper navigationHelper;
+    private static Properties properties;
 
 
     public WebDriver initChromeWebDriver() {
@@ -23,15 +23,15 @@ public class SessionHelper {
     }
 
 
-    public Properties initProperties() throws IOException {
+    public static Properties initProperties() throws IOException {
         properties = new Properties();
         properties.load(new FileInputStream("src/test/resources/config.properties"));
 
         return properties;
     }
 
-    public NavigationHelper goTo() {
-        navigationHelper = new NavigationHelper(this.wd);
+    public static NavigationHelper goTo() {
+        navigationHelper = new NavigationHelper(wd);
         return navigationHelper;
     }
 
