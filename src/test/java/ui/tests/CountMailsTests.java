@@ -1,29 +1,17 @@
 package ui.tests;
 
 import api.tests.helpers.TestInfo;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import ui.tests.appmanager.BaseHelper;
+import ui.tests.PageObjects.InboxPage;
+import ui.tests.PageObjects.LoginPage;
 
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CountMailsTests extends BaseHelper {
+public class CountMailsTests extends BaseTest {
 
-
-    @Before
-    public void setUp() {
-        initChromeWebDriver();
-    }
-
-    @After
-    public void tearDown() {
-        wd.quit();
-
-    }
 
     @Test
     @DisplayName("Проверка отправки письма самому себе и сравнение кол-ва писем до и после с определённой темой")
@@ -37,15 +25,15 @@ public class CountMailsTests extends BaseHelper {
 
         goTo().loginPage();
 
-        loginWithCorrectLoginAndPassword();
+        lp().loginWithCorrectLoginAndPassword();
 
-        long countBeforeSendingLetter = countMessagesWithTheme("Simbirsoft theme");
+        int countBeforeSendingLetter = ip().countMessagesWithTheme("Simbirsoft theme");
 
-        writingLetterToMyself(countBeforeSendingLetter);
+        ip().writingLetterToMyself(countBeforeSendingLetter);
 
-        waitNewMessages();
+        ip().waitNewMessages(countBeforeSendingLetter);
 
-        long countAfterSendingLetter = countMessagesWithTheme("Simbirsoft theme");
+        int countAfterSendingLetter = ip().countMessagesWithTheme("Simbirsoft theme");
 
         assertEquals(countBeforeSendingLetter + 1, countAfterSendingLetter);
     }
