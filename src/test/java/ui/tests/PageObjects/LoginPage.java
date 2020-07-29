@@ -1,14 +1,21 @@
 package ui.tests.PageObjects;
 
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import ui.tests.appmanager.BaseHelper;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Properties;
+
+import static java.time.temporal.ChronoUnit.MILLIS;
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 
 public class LoginPage extends BaseHelper {
@@ -47,7 +54,9 @@ public class LoginPage extends BaseHelper {
         // ввод пароля
         type(PASSWORD_FIELD, password);
 
+        // далее
         safeClickToElement(NEXT);
+
     }
 
     /**
@@ -56,6 +65,8 @@ public class LoginPage extends BaseHelper {
     public static void loginWithCorrectLoginAndPassword() throws IOException {
         Properties properties = initProperties();
         login(properties.getProperty("mailbox_address"), properties.getProperty("mailbox_password"));
+
+
     }
 
 }
